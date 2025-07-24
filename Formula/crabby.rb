@@ -1,16 +1,16 @@
 class Crabby < Formula
   desc "Cross-platform terminal emulator written in Rust"
   homepage "https://github.com/lassejlv/crabby-rs"
-  version "0.0.5"
+  version "0.0.6"
   license "MIT"
 
   on_macos do
     if Hardware::CPU.arm?
       url "https://github.com/lassejlv/crabby-rs/releases/download/v#{version}/Crabby_#{version}_aarch64.dmg"
-      sha256 "15a5d1388861e62740018878b302c18bf803a082fe5124d63753ddfde78d3370"
+      sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
     else
       url "https://github.com/lassejlv/crabby-rs/releases/download/v#{version}/Crabby_#{version}_x64.dmg"
-      sha256 "10ccb21ee706a157c627060f7ba6d4327ab9e5037b73ff06f8b097e188aa4812"
+      sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
     end
   end
 
