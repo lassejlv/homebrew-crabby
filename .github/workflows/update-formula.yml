@@ -1,0 +1,90 @@
+name: Update Homebrew Formula
+
+on:
+  repository_dispatch:
+    types: [crabby-release]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to update to (e.g., 0.0.1)'
+        required: true
+        type: string
+      arm64_sha:
+        description: 'SHA256 for ARM64 DMG'
+        required: true
+        type: string
+      x64_sha:
+        description: 'SHA256 for x64 DMG'
+        required: true
+        type: string
+
+jobs:
+  update-formula:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout tap repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set version and SHA variables
+        id: vars
+        run: |
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            echo "version=${{ github.event.client_payload.version }}" >> $GITHUB_OUTPUT
+            echo "arm64_sha=${{ github.event.client_payload.arm64_sha }}" >> $GITHUB_OUTPUT
+            echo "x64_sha=${{ github.event.client_payload.x64_sha }}" >> $GITHUB_OUTPUT
+          else
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+            echo "arm64_sha=${{ github.event.inputs.arm64_sha }}" >> $GITHUB_OUTPUT
+            echo "x64_sha=${{ github.event.inputs.x64_sha }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update Cask formula
+        run: |
+          VERSION="${{ steps.vars.outputs.version }}"
+          ARM64_SHA="${{ steps.vars.outputs.arm64_sha }}"
+          X64_SHA="${{ steps.vars.outputs.x64_sha }}"
+
+          # Update version
+          sed -i "s/version \".*\"/version \"$VERSION\"/" Casks/crabby.rb
+
+          # Update SHA256 hashes
+          sed -i "s/sha256 arm:   \".*\",/sha256 arm:   \"$ARM64_SHA\",/" Casks/crabby.rb
+          sed -i "s/intel: \".*\"/intel: \"$X64_SHA\"/" Casks/crabby.rb
+
+      - name: Update Formula
+        run: |
+          VERSION="${{ steps.vars.outputs.version }}"
+          ARM64_SHA="${{ steps.vars.outputs.arm64_sha }}"
+          X64_SHA="${{ steps.vars.outputs.x64_sha }}"
+
+          # Update version
+          sed -i "s/version \".*\"/version \"$VERSION\"/" Formula/crabby.rb
+
+          # Update SHA256 hashes - this is more complex due to the conditional blocks
+          # We'll use a more targeted approach
+          awk -v arm_sha="$ARM64_SHA" -v x64_sha="$X64_SHA" '
+          /if Hardware::CPU\.arm\?/ { in_arm = 1 }
+          /else/ && in_arm { in_arm = 0; in_x64 = 1 }
+          /end/ && (in_arm || in_x64) { in_arm = 0; in_x64 = 0 }
+          /sha256/ && in_arm { sub(/sha256 ".*"/, "sha256 \"" arm_sha "\"") }
+          /sha256/ && in_x64 { sub(/sha256 ".*"/, "sha256 \"" x64_sha "\"") }
+          { print }
+          ' Formula/crabby.rb > Formula/crabby.rb.tmp && mv Formula/crabby.rb.tmp Formula/crabby.rb
+
+      - name: Verify changes
+        run: |
+          echo "=== Updated Cask ==="
+          cat Casks/crabby.rb
+          echo ""
+          echo "=== Updated Formula ==="
+          cat Formula/crabby.rb
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Update Crabby to version ${{ steps.vars.outputs.version }}" || exit 0
+          git push
