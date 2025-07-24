@@ -1,7 +1,7 @@
 class Crabby < Formula
   desc "Cross-platform terminal emulator written in Rust"
   homepage "https://github.com/lassejlv/crabby-rs"
-  version "v0.0.6"
+  version "0.0.6"
   license "MIT"
 
   on_macos do
