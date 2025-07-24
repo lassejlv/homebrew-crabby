@@ -6,17 +6,20 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to update to (e.g., 0.0.1)'
+        description: "Version to update to (e.g., 0.0.1)"
         required: true
         type: string
       arm64_sha:
-        description: 'SHA256 for ARM64 DMG'
+        description: "SHA256 for ARM64 DMG"
         required: true
         type: string
       x64_sha:
-        description: 'SHA256 for x64 DMG'
+        description: "SHA256 for x64 DMG"
         required: true
         type: string
+
+permissions:
+  contents: write
 
 jobs:
   update-formula:
