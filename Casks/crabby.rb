@@ -1,14 +1,14 @@
 cask "crabby" do
-  version "0.0.1"
+  version "0.0.5"
 
-  arch arm: "aarch64", intel: "x64"
+  arch arm: "aarch64", intel: "10ccb21ee706a157c627060f7ba6d4327ab9e5037b73ff06f8b097e188aa4812"
 
   url "https://github.com/lassejlv/crabby-rs/releases/download/v#{version}/Crabby_#{version}_#{arch}.dmg",
       verified: "github.com/lassejlv/crabby-rs/"
 
   # You'll need to replace these with actual SHA256 hashes after creating a release
-  sha256 arm:   "REPLACE_WITH_ARM64_SHA256",
-         intel: "REPLACE_WITH_X64_SHA256"
+  sha256 arm:   "15a5d1388861e62740018878b302c18bf803a082fe5124d63753ddfde78d3370",
+         intel: "10ccb21ee706a157c627060f7ba6d4327ab9e5037b73ff06f8b097e188aa4812"
 
   name "Crabby"
   desc "Cross-platform terminal emulator written in Rust"
