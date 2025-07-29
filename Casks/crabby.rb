@@ -1,5 +1,5 @@
 cask "crabby" do
-  version "0.0.6"
+  version "v0.0.7"
 
   arch arm: "aarch64", intel: "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
 
