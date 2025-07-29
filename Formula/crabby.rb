@@ -7,10 +7,10 @@ class Crabby < Formula
   on_macos do
     if Hardware::CPU.arm?
       url "https://github.com/lassejlv/crabby-rs/releases/download/v#{version}/Crabby_#{version}_aarch64.dmg"
-      sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+      sha256 "d98e437addd2ae7c6a2d8edee0726f2e3c748eadced454fb144dde547b740a8d"
     else
       url "https://github.com/lassejlv/crabby-rs/releases/download/v#{version}/Crabby_#{version}_x64.dmg"
-      sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+      sha256 "28a95518c9a9023313df7ea5a40055fb193bb4a3252cea5264549cbc96530724"
     end
   end
 
